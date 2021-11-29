@@ -47,7 +47,14 @@ const Job=mongoose.model('job',jobSchema)
 
 // get all jobs in a particular city which matches a particular skill
 
-
+app.get("/jobs/:job_location/:skill",async(req,res)=>{
+    try{
+        const particular=await Job.find({job_location:req.params.job_location,skill:req.params.skill}).lean().exec()
+        res.status(200).send({particular})
+    }catch(e){
+        res.status(500).send({message:e.message})
+    }
+})
 
 
 
