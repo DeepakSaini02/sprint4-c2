@@ -2,19 +2,20 @@ const express=require('express')
 const mongoose=require('mongoose')
 const app=express()
 
+app.use(express.json())
 const connect=()=>{
     return mongoose.connect("mongodb://localhost:27017/naukri")
 
 }
 
-//companySachema-----------
+// companySachema-----------
 const companySchema=new mongoose.Schema({
-    company_name:{type:String,required:true},
-    open_vacancy:{type:Number,required:true}
+    name:{type:String,required:true},
+    vacancy:{type:Number,required:true}
 
 },{
+    versionKey:false,
     timestamps:true,
-    versionKey:false
 })
 
 const Company=mongoose.model("company",companySchema)
@@ -32,6 +33,9 @@ const jobSchema=new mongoose.Schema({
         ref:"company",
         required:true
     }
+},{
+    versionKey:false,
+    timestamps:true,
 })
 
 const Job=mongoose.model('job',jobSchema)
@@ -39,7 +43,7 @@ const Job=mongoose.model('job',jobSchema)
 
 //basic curd api for company
 
-app.get("/companies",async(req,res)=>{
+app.get("/jobs",async(req,res)=>{
     try{
         const company=await Company.find().lean().exec()
         res.status(200).send({company})
@@ -48,9 +52,9 @@ app.get("/companies",async(req,res)=>{
     }
 })
 
-app.post("/companies",async(req,res)=>{
+app.post("/jobs",async(req,res)=>{
     try{
-        const company=await Company.create(req.body)
+        const company=await Job.create(req.body)
         res.status(201).send(company)
     }catch(e){
         res.status(500).send({message:e.message})
