@@ -44,10 +44,10 @@ router.get("/:notice_period",async(req,res)=>{
 
 
 // find all the jobs that are available as Work from home.
-router.get("/:job_type",async(req,res)=>{
+router.get("/wrh/on/1",async(req,res)=>{
     try{
-        const job=await Job.find({job_type:req.params.job_type}).lean().exec()
-        res.status(200).send({job})
+        const wrh=await Job.find({job_type:"work from home"}).lean().exec()
+        res.status(200).send({wrh})
     }catch(e){
         res.status(500).send({message:e.message})
     }
