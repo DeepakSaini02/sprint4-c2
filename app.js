@@ -31,6 +31,7 @@ const jobSchema=new mongoose.Schema({
     notice_period:{type:Number,required:true},
     job_location:{type:String,required:true},
     rating:{type:Number,required:true},
+    skill:{type:String,required:true},
     company_id:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"company",
@@ -42,6 +43,69 @@ const jobSchema=new mongoose.Schema({
 })
 
 const Job=mongoose.model('job',jobSchema)
+
+
+// get all jobs in a particular city which matches a particular skill
+
+
+
+
+
+// find the company that has the most open jobs.
+
+app.get("/comp/hijobs",async(req,res)=>{
+    try{
+        const hijobs=await Company.find().sort({vacancy:-1}).limit(1).lean().exec()
+        res.status(200).send({hijobs})
+    }catch(e){
+        res.status(500).send({message:e.message})
+    }
+})
+
+
+
+
+// find all jobs by sorting the jobs as per their rating.
+app.get("/jobs",async(req,res)=>{
+    try{
+        const job=await Job.find().sort({rating:1}).lean().exec()
+        res.status(200).send({job})
+    }catch(e){
+        res.status(500).send({message:e.message})
+    }
+})
+
+
+
+// find all the jobs that will accept a notice period of 2 months.
+app.get("/jobs/:notice_period",async(req,res)=>{
+    try{
+        const job=await Job.find({notice_period:req.params.notice_period}).lean().exec()
+        res.status(200).send({job})
+    }catch(e){
+        res.status(500).send({message:e.message})
+    }
+})
+
+
+
+// find all the jobs that are available as Work from home.
+app.get("/jobs/:job_type",async(req,res)=>{
+    try{
+        const job=await Job.find({job_type:req.params.job_type}).lean().exec()
+        res.status(200).send({job})
+    }catch(e){
+        res.status(500).send({message:e.message})
+    }
+})
+
+
+
+
+
+
+
+
 
 
 //basic curd api for company
@@ -65,6 +129,8 @@ app.get("/comp",async(req,res)=>{
     }
 })
 
+
+// an api to get details of the company.
 app.get("/comp/:id",async(req,res)=>{
     try{
         const company=await Company.findById(req.params.id).lean().exec()
